@@ -4,16 +4,17 @@ with open('VERSION.txt', 'r') as f:
     version = f.read().strip()
 
 setuptools.setup(
-    name="odoo14-addons-oca-calendar",
+    name="odoo12-addons-oca-calendar",
     description="Meta package for oca-calendar Odoo addons",
     version=version,
     install_requires=[
-        'odoo14-addon-calendar_partner_color',
-        'odoo14-addon-resource_booking',
+        'odoo12-addon-calendar_event_link_base',
+        'odoo12-addon-calendar_event_link_project_task',
+        'odoo12-addon-resource_booking',
     ],
     classifiers=[
         'Programming Language :: Python',
         'Framework :: Odoo',
-        'Framework :: Odoo :: 14.0',
+        'Framework :: Odoo :: 12.0',
     ]
 )

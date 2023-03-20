@@ -7,20 +7,20 @@ Resource booking
    !! changes will be overwritten.                   !!
    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-.. |badge1| image:: https://img.shields.io/badge/maturity-Production%2FStable-green.png
+.. |badge1| image:: https://img.shields.io/badge/maturity-Beta-yellow.png
     :target: https://odoo-community.org/page/development-status
-    :alt: Production/Stable
+    :alt: Beta
 .. |badge2| image:: https://img.shields.io/badge/licence-AGPL--3-blue.png
     :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
     :alt: License: AGPL-3
 .. |badge3| image:: https://img.shields.io/badge/github-OCA%2Fcalendar-lightgray.png?logo=github
-    :target: https://github.com/OCA/calendar/tree/14.0/resource_booking
+    :target: https://github.com/OCA/calendar/tree/12.0/resource_booking
     :alt: OCA/calendar
 .. |badge4| image:: https://img.shields.io/badge/weblate-Translate%20me-F47D42.png
-    :target: https://translation.odoo-community.org/projects/calendar-14-0/calendar-14-0-resource_booking
+    :target: https://translation.odoo-community.org/projects/calendar-12-0/calendar-12-0-resource_booking
     :alt: Translate me on Weblate
 .. |badge5| image:: https://img.shields.io/badge/runbot-Try%20me-875A7B.png
-    :target: https://runbot.odoo-community.org/runbot/279/14.0
+    :target: https://runbot.odoo-community.org/runbot/279/12.0
     :alt: Try me on Runbot
 
 |badge1| |badge2| |badge3| |badge4| |badge5| 
@@ -63,7 +63,7 @@ To install this module, you need to install these dependencies:
 
 When someone is a manager, he will have access to *Resource Bookings >
 Configuration*, where he will be able to configure resources, leaves and
-schedules. This menu is just provided as a shortcut. However, if you want to
+schedules. This menu is just provided as a commodity. However, if you want to
 manage that stuff more comfortably:
 
 * To manage human resources, install `hr <https://apps.odoo.com/app/employees>`__.
@@ -91,9 +91,7 @@ To configure one booking type:
 #. Go to *Resource Bookings > Types*.
 #. Create one.
 #. Give it a *name*.
-#. Set the *Duration*, to know the time assigned to each calendar slot. It will
-   also be the default duration for each booking, although that can be changed
-   later if necessary.
+#. Set the *Duration*, to know the time assigned to each calendar slot.
 #. Set the *Modifications Deadline*, to forbid non-managers to alter dates of
    a booking when it's too late.
 #. Choose one *Availability Calendar*. No bookings will exist outside of it.
@@ -132,8 +130,8 @@ To book some resources:
 #. Click on *Booking Count*.
 #. Click on a free slot.
 #. Fill the *Requester*, which may or not be yourself.
-#. Uncheck *Auto assign* and pick one *Resources combination*, in case the one
-   assigned automatically isn't the one you want.
+#. Pick one *Resources combination*, in case the one assigned automatically
+   isn't the one you want.
 
 To invite someone to book a resource combination from the portal:
 
@@ -143,12 +141,9 @@ To invite someone to book a resource combination from the portal:
 #. Click on the list view icon.
 #. Click on *Create*.
 #. Fill the *Requester*.
-#. Uncheck *Auto assign* and pick one *Resources combination*, if you want that
-   the requester is assigned to that combination. Otherwise, leave it empty,
-   and some free combination will be assigned automatically when the requester
-   picks a free slot.
-#. Choose the *duration*, in case it is different from the one specified in the
-   resource booking type.
+#. Pick one *Resources combination*, if you want that the requester is assigned
+   to that combination. Otherwise, leave it empty, and some free combination
+   will be assigned automatically when the requester picks a free slot.
 #. Click on *Share > Send*.
 #. The requester will receive an email to select a calendar slot from his portal.
 
@@ -159,7 +154,6 @@ Known issues / Roadmap
 * Allow customer to choose combination.
 * Some error messages would be a bit more helpful if they specify the schedule
   impossibility reason, but that should be done without affecting performance.
-* Optimize ``_calendar_event_busy_intervals()`` to make it work in batch.
 
 Bug Tracker
 ===========
@@ -167,7 +161,7 @@ Bug Tracker
 Bugs are tracked on `GitHub Issues <https://github.com/OCA/calendar/issues>`_.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us smashing it by providing a detailed and welcomed
-`feedback <https://github.com/OCA/calendar/issues/new?body=module:%20resource_booking%0Aversion:%2014.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+`feedback <https://github.com/OCA/calendar/issues/new?body=module:%20resource_booking%0Aversion:%2012.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
 Do not contact contributors directly about support or help with technical issues.
 
@@ -197,14 +191,14 @@ OCA, or the Odoo Community Association, is a nonprofit organization whose
 mission is to support the collaborative development of Odoo features and
 promote its widespread use.
 
-.. |maintainer-pedrobaeza| image:: https://github.com/pedrobaeza.png?size=40px
-    :target: https://github.com/pedrobaeza
-    :alt: pedrobaeza
+.. |maintainer-Yajo| image:: https://github.com/Yajo.png?size=40px
+    :target: https://github.com/Yajo
+    :alt: Yajo
 
 Current `maintainer <https://odoo-community.org/page/maintainer-role>`__:
 
-|maintainer-pedrobaeza| 
+|maintainer-Yajo| 
 
-This module is part of the `OCA/calendar <https://github.com/OCA/calendar/tree/14.0/resource_booking>`_ project on GitHub.
+This module is part of the `OCA/calendar <https://github.com/OCA/calendar/tree/12.0/resource_booking>`_ project on GitHub.
 
 You are welcome to contribute. To learn how please visit https://odoo-community.org/page/Contribute.

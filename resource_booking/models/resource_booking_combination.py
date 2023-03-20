@@ -2,7 +2,6 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo import _, api, fields, models
-
 from odoo.addons.resource.models.resource import Intervals
 
 
@@ -10,7 +9,7 @@ class ResourceBookingCombination(models.Model):
     _name = "resource.booking.combination"
     _description = "Bookable resource combinations"
 
-    active = fields.Boolean(default=True)
+    active = fields.Boolean(index=True, default=True)
     booking_count = fields.Integer(
         compute="_compute_booking_count", string="Booking count"
     )
@@ -72,8 +71,7 @@ class ResourceBookingCombination(models.Model):
         """Get available intervals for this booking combination."""
         base = Intervals([(start_dt, end_dt, self)])
         result = Intervals([])
-        # Detached compatibility with hr_holidays_public
-        for combination in self.with_context(exclude_public_holidays=True):
+        for combination in self:
             combination_intervals = base
             for res in combination.resource_ids:
                 if not combination_intervals:

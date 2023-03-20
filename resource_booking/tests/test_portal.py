@@ -1,14 +1,12 @@
 # Copyright 2021 Tecnativa - Jairo Llopis
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
+from odoo.tests.common import HttpCase
+from .common import create_test_data
+from lxml.html import fromstring
 from datetime import datetime
 
 from freezegun import freeze_time
-from lxml.html import fromstring
-
-from odoo.tests.common import HttpCase
-
-from .common import create_test_data
 
 
 @freeze_time("2021-02-26 09:00:00", tick=True)
@@ -37,7 +35,7 @@ class PortalCase(HttpCase):
 
     def _url_xml(self, url, data=None, timeout=10):
         """Open an URL and return the lxml etree object resulting from its content."""
-        response = self.url_open(url, data, timeout=timeout)
+        response = self.url_open(url, data, timeout)
         return fromstring(response.content)
 
     def test_portal_no_bookings(self):
@@ -76,30 +74,16 @@ class PortalCase(HttpCase):
         # One booking for portal user, another for a partner without user
         bookings = self.env["resource.booking"].create(
             [
-                {
-                    "partner_id": self.user_portal.partner_id.id,
-                    "type_id": self.rbt.id,
-                    "duration": 1,
-                },
-                {
-                    "partner_id": self.partner.id,
-                    "type_id": self.rbt.id,
-                    "location": "Office 2",
-                },
+                {"partner_id": self.user_portal.partner_id.id, "type_id": self.rbt.id},
+                {"partner_id": self.partner.id, "type_id": self.rbt.id},
             ]
         )
-        booking_public = bookings[1]
+        booking_portal, booking_public = bookings
         # We assume they were invited by email and clicked on their links
         portal_url, public_url = (one.get_portal_url() for one in bookings)
         # Portal guy goes to scheduling page
         portal_page = self._url_xml(portal_url)
         self.assertTrue(portal_page.cssselect('.badge:contains("Pending")'))
-        self.assertTrue(
-            portal_page.cssselect(':contains("Duration:") + :contains("01:00")')
-        )
-        self.assertTrue(
-            portal_page.cssselect(':contains("Location:") + :contains("Main office")')
-        )
         link = portal_page.cssselect('a:contains("Schedule")')[0]
         portal_url = link.get("href")
         portal_page = self._url_xml(portal_url)
@@ -126,12 +110,6 @@ class PortalCase(HttpCase):
         self.assertTrue(portal_page.cssselect(".o_booking_calendar form"))
         # Public guy does the same
         public_page = self._url_xml(public_url)
-        self.assertTrue(
-            public_page.cssselect(':contains("Duration:") + :contains("00:30")')
-        )
-        self.assertTrue(
-            public_page.cssselect(':contains("Location:") + :contains("Office 2")')
-        )
         self.assertTrue(public_page.cssselect('.badge:contains("Pending")'))
         link = public_page.cssselect('a:contains("Schedule")')[0]
         public_url = link.get("href")
@@ -185,7 +163,7 @@ class PortalCase(HttpCase):
             )
         )
         self.assertTrue(
-            public_page.cssselect('div:contains("Location:"):contains("Office 2")')
+            public_page.cssselect('div:contains("Location:"):contains("Main office")')
         )
         self.assertTrue(
             public_page.cssselect(
@@ -256,7 +234,7 @@ class PortalCase(HttpCase):
         self.assertTrue(
             portal_page.cssselect(
                 'div:contains("Dates:")'
-                ':contains("03/01/2021 at (10:30:00 To 11:30:00) (UTC)")'
+                ':contains("03/01/2021 at (10:30:00 To 11:00:00) (UTC)")'
             )
         )
         # Portal guy cancels
@@ -264,3 +242,51 @@ class PortalCase(HttpCase):
         portal_url = link.get("href")
         portal_page = self._url_xml(portal_url)
         self.assertTrue(portal_page.cssselect(".oe_login_form"))
+
+
+@freeze_time("2021-12-26 09:00:00", tick=True)
+class PortalCaseCalendar(HttpCase):
+    def setUp(self):
+        super().setUp()
+        create_test_data(self)
+        self.user_portal = self.env["res.users"].create({
+            "name": "portal",
+            "login": "ptl",
+            "password": "ptl",
+            "groups_id": [(4, self.env.ref("base.group_portal").id, 0)],
+        })
+
+    def _url_xml(self, url, data=None, timeout=10):
+        """Open an URL and return the lxml etree object resulting from its content."""
+        response = self.url_open(url, data, timeout)
+        return fromstring(response.content)
+
+    def test_portal_scheduling_calendar(self):
+        # test scheduling calendar when switching year
+        booking = self.env["resource.booking"].create(
+            {"partner_id": self.user_portal.partner_id.id, "type_id": self.rbt.id}
+        )
+        self.authenticate("ptl", "ptl")
+        portal_url = booking.get_portal_url()
+        # Portal guy goes to scheduling page
+        portal_page = self._url_xml(portal_url)
+        link = portal_page.cssselect('a:contains("Schedule")')[0]
+        portal_url = link.get("href")
+        portal_page = self._url_xml(portal_url)
+        self.assertTrue(
+            portal_page.cssselect(".o_booking_calendar:contains('December 2021')")
+        )
+        # He goes to January 2022
+        link = portal_page.cssselect('a[title="Next month"]')[0]
+        portal_url = link.get("href")
+        portal_page = self._url_xml(portal_url)
+        self.assertTrue(
+            portal_page.cssselect(".o_booking_calendar:contains('January 2022')")
+        )
+        # He goes back to December 2021
+        link = portal_page.cssselect('a[title="Previous month"]')[0]
+        portal_url = link.get("href")
+        portal_page = self._url_xml(portal_url)
+        self.assertTrue(
+            portal_page.cssselect(".o_booking_calendar:contains('December 2021')")
+        )

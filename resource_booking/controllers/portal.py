@@ -1,17 +1,14 @@
 # Copyright 2021 Tecnativa - Jairo Llopis
-# Copyright 2022 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from datetime import datetime
 from urllib.parse import quote_plus
 
 from dateutil.parser import isoparse
-
+from odoo.addons.portal.controllers import portal
 from odoo.exceptions import AccessError, MissingError, ValidationError
 from odoo.http import request, route
 from odoo.tests.common import Form
-
-from odoo.addons.portal.controllers import portal
 
 
 class CustomerPortal(portal.CustomerPortal):
@@ -50,7 +47,7 @@ class CustomerPortal(portal.CustomerPortal):
     )
     def portal_my_bookings(self, page=1, **kwargs):
         """List bookings that I can access."""
-        Booking = request.env["resource.booking"].with_context(using_portal=True)
+        Booking = request.env["resource.booking"]
         values = self._prepare_portal_layout_values()
         pager = portal.pager(
             url="/my/bookings",
@@ -134,7 +131,7 @@ class CustomerPortal(portal.CustomerPortal):
                 booking_form.start = when_naive
         except ValidationError as error:
             url = booking_sudo.get_portal_url(
-                suffix="/schedule/{:%Y/%m}".format(when_tz_aware),
+                suffix="/schedule/{0:%Y/%m}".format(when_tz_aware),
                 query_string="&error={}".format(quote_plus(error.name)),
             )
             return request.redirect(url)
